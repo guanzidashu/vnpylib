@@ -829,7 +829,7 @@ class BacktestingEngine(object):
         
 
 
-        return  d
+        # return  d
         # 绘图
         fig = plt.figure(figsize=(10, 16))
         
