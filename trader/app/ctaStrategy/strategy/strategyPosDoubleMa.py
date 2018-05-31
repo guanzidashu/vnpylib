@@ -73,9 +73,9 @@ class DoubleMaPosStrategy(TargetPosTemplate):
         """初始化策略（必须由用户继承实现）"""
         self.writeCtaLog(u'双EMA演示策略初始化')
         
-        initData = self.loadBar(self.initDays)
-        for bar in initData:
-            self.onBar(bar)
+        # initData = self.loadBar(self.initDays)
+        # for bar in initData:
+        #     self.onBar(bar)
         
         self.putEvent()
         
@@ -130,11 +130,11 @@ class DoubleMaPosStrategy(TargetPosTemplate):
 
         if crossOver:
             self.setTargetPos(maxPos)
-            print("long order price :" + str(bar.close) + "pos :"+ str(maxPos))
+            # print("long order price :" + str(bar.close) + "pos :"+ str(maxPos))
         # 死叉和金叉相反
         elif crossBelow:
             self.setTargetPos(-maxPos)
-            print("short order price :" + str(bar.close) + "pos :"+ str(maxPos))
+            # print("short order price :" + str(bar.close) + "pos :"+ str(maxPos))
      
         # 发出状态更新事件
         self.putEvent()
@@ -159,12 +159,12 @@ class DoubleMaPosStrategy(TargetPosTemplate):
 
         if trade.offset == OFFSET_CLOSE:          
             self.curCapital += turnover
-            print("close tracde price :" + str(trade.price) + "pos :"+ str(trade.volume))
+            # print("close tracde price :" + str(trade.price) + "pos :"+ str(trade.volume))
 
         elif trade.offset == OFFSET_OPEN:
             self.curCapital -= turnover
-            print("open tracde price :" + str(trade.price) + "pos :"+ str(trade.volume))
-
+            # print("open tracde price :" + str(trade.price) + "pos :"+ str(trade.volume))
+        print(self.curCapital)
         pass
     
     #----------------------------------------------------------------------

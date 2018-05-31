@@ -9,10 +9,10 @@ from vnpy.trader.vtConstant import EMPTY_UNICODE, EMPTY_STRING, EMPTY_FLOAT, EMP
 
 # 常量定义
 # CTA引擎中涉及到的交易方向类型
-CTAORDER_BUY = u'买开'
-CTAORDER_SELL = u'卖平'
-CTAORDER_SHORT = u'卖开'
-CTAORDER_COVER = u'买平'
+CTAORDER_BUY = u'buyopen'
+CTAORDER_SELL = u'sellclose'
+CTAORDER_SHORT = u'sellopen'
+CTAORDER_COVER = u'buyclose'
 
 # 本地停止单状态
 STOPORDER_WAITING = u'等待中'

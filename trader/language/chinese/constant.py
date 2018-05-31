@@ -8,20 +8,20 @@ EMPTY_FLOAT = 0.0
 
 # 方向常量
 DIRECTION_NONE = u'无方向'
-DIRECTION_LONG = u'多'
-DIRECTION_SHORT = u'空'
+DIRECTION_LONG = u'duo'
+DIRECTION_SHORT = u'kong'
 DIRECTION_UNKNOWN = u'未知'
 DIRECTION_NET = u'净'
 DIRECTION_SELL = u'卖出'              # IB接口
 DIRECTION_COVEREDSHORT = u'备兑空'    # 证券期权
 
 # 开平常量
-OFFSET_NONE = u'无开平'
-OFFSET_OPEN = u'开仓'
-OFFSET_CLOSE = u'平仓'
+OFFSET_NONE = u'wukaipin'
+OFFSET_OPEN = u'kaicang'
+OFFSET_CLOSE = u'pingcang'
 OFFSET_CLOSETODAY = u'平今'
 OFFSET_CLOSEYESTERDAY = u'平昨'
-OFFSET_UNKNOWN = u'未知'
+OFFSET_UNKNOWN = u'weizhi'
 
 # 状态常量
 STATUS_NOTTRADED = u'未成交'
