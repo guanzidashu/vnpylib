@@ -61,8 +61,6 @@ class DoubleMaPosStrategy(TargetPosTemplate):
         
         self.bg = BarGenerator(self.onBar)
         self.am = ArrayManager()
-        self.capital = self.ctaEngine.capital
-        self.curCapital = self.capital
         # 注意策略类中的可变对象属性（通常是list和dict等），在策略初始化时需要重新创建，
         # 否则会出现多个策略实例之间数据共享的情况，有可能导致潜在的策略逻辑错误风险，
         # 策略类中的这些可变对象属性可以选择不写，全都放在__init__下面，写主要是为了阅读
@@ -151,20 +149,22 @@ class DoubleMaPosStrategy(TargetPosTemplate):
     #----------------------------------------------------------------------
     def onTrade(self, trade):
         """收到成交推送（必须由用户继承实现）"""
-        # 对于无需做细粒度委托控制的策略，可以忽略onOrder
-        # trade = VtTradeData(trade)
-        turnover = trade.price * trade.volume       #成交金额
-        from vnpy.trader.vtGateway import VtOrderData, VtTradeData
-        from vnpy.trader.vtConstant import DIRECTION_LONG, DIRECTION_SHORT, OFFSET_OPEN, OFFSET_CLOSE, PRICETYPE_LIMITPRICE
+        super(DoubleMaPosStrategy, self).onTrade(trade)
 
-        if trade.offset == OFFSET_CLOSE:          
-            self.curCapital += turnover
-            # print("close tracde price :" + str(trade.price) + "pos :"+ str(trade.volume))
+        # # 对于无需做细粒度委托控制的策略，可以忽略onOrder
+        # # trade = VtTradeData(trade)
+        # turnover = trade.price * trade.volume       #成交金额
+        # from vnpy.trader.vtGateway import VtOrderData, VtTradeData
+        # from vnpy.trader.vtConstant import DIRECTION_LONG, DIRECTION_SHORT, OFFSET_OPEN, OFFSET_CLOSE, PRICETYPE_LIMITPRICE
 
-        elif trade.offset == OFFSET_OPEN:
-            self.curCapital -= turnover
-            # print("open tracde price :" + str(trade.price) + "pos :"+ str(trade.volume))
-        print(self.curCapital)
+        # if trade.offset == OFFSET_CLOSE:          
+        #     self.curCapital += turnover
+        #     # print("close tracde price :" + str(trade.price) + "pos :"+ str(trade.volume))
+
+        # elif trade.offset == OFFSET_OPEN:
+        #     self.curCapital -= turnover
+        #     # print("open tracde price :" + str(trade.price) + "pos :"+ str(trade.volume))
+        # print(self.curCapital)
         pass
     
     #----------------------------------------------------------------------

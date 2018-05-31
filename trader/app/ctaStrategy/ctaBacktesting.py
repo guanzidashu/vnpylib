@@ -63,6 +63,7 @@ class BacktestingEngine(object):
         self.endDate = ''
 
         self.capital = 1000000      # 回测时的起始本金（默认100万）
+        self.curCapital = 1000000
         self.slippage = 0           # 回测时假设的滑点
         self.rate = 0               # 回测时假设的佣金比例（适用于百分比佣金）
         self.size = 1               # 合约大小，默认为1    
@@ -155,6 +156,7 @@ class BacktestingEngine(object):
     def setCapital(self, capital):
         """设置资本金"""
         self.capital = capital
+        self.curCapital = capital
     
     #----------------------------------------------------------------------
     def setSlippage(self, slippage):
@@ -574,6 +576,15 @@ class BacktestingEngine(object):
         """获取最小价格变动"""
         return self.priceTick
     
+
+    #------------------------------------------------
+    # 更新当前持有现金
+    #------------------------------------------------      
+    
+    #----------------------------------------------------------------------
+
+
+
     #------------------------------------------------
     # 结果计算相关
     #------------------------------------------------      
@@ -1126,7 +1137,26 @@ class BacktestingEngine(object):
         
         plt.show()
        
-        
+
+
+########################################################################
+class UnilateralTradingResult(object):
+    """TradingResult交易的结果"""
+
+    #----------------------------------------------------------------------
+    def __init__(self,trade, rate, slippage, size):
+        """Constructor"""
+        self.price = trade.price    
+        self.volume = trade.volume    # 交易数量（+/-代表方向）    
+        self.turnover = self.price*size*abs(self.volume)   # 成交金额
+        self.commission = self.turnover*rate                                # 手续费成本
+        self.slippage = slippage*size*abs(self.volume)                         # 滑点成本
+        if trade.offset is OFFSET_OPEN:
+            self.payout = self.turnover - self.commission - self.slippage        # 交易金额
+        else:
+            self.payout =-1*(self.turnover - self.commission - self.slippage)        # 交易金额
+
+
 ########################################################################
 class TradingResult(object):
     """每笔交易的结果"""

@@ -11,7 +11,7 @@ from vnpy.trader.vtConstant import *
 from vnpy.trader.vtObject import VtBarData
 
 from .ctaBase import *
-
+from vnpy.trader.app.ctaStrategy.ctaBacktesting import *
 
 ########################################################################
 class CtaTemplate(object):
@@ -35,6 +35,9 @@ class CtaTemplate(object):
     inited = False                 # 是否进行了初始化
     trading = False                # 是否启动交易，由引擎管理
     pos = 0                        # 持仓情况
+    curCapital = 0                 # 可用资金
+    capital = 1000000              # 初始资金
+
 
     # 参数列表，保存了参数的名称
     paramList = ['name',
@@ -54,7 +57,8 @@ class CtaTemplate(object):
     def __init__(self, ctaEngine, setting):
         """Constructor"""
         self.ctaEngine = ctaEngine
-
+        self.capital = self.ctaEngine.capital
+        self.curCapital = self.capital
         # 设置策略的参数
         if setting:
             d = self.__dict__
@@ -216,7 +220,7 @@ class TargetPosTemplate(CtaTemplate):
     onTick
     onBar
     onOrder
-
+    onTrade
     假设策略名为TestStrategy，请在onTick回调中加上：
     super(TestStrategy, self).onTick(tick)
 
@@ -264,6 +268,11 @@ class TargetPosTemplate(CtaTemplate):
         if order.status == STATUS_ALLTRADED or order.status == STATUS_CANCELLED:
             if order.vtOrderID in self.orderList:
                 self.orderList.remove(order.vtOrderID)
+
+    #----------------------------------------------------------------------
+    def onTrade(self, trade):
+        """收到成交推送"""
+        self.curCapital -= UnilateralTradingResult(trade,self.ctaEngine.rate,self.ctaEngine.slippage,self.ctaEngine.size).payout
 
     #----------------------------------------------------------------------
     def setTargetPos(self, targetPos):
