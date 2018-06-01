@@ -1141,7 +1141,7 @@ class BacktestingEngine(object):
 
 ########################################################################
 class UnilateralTradingResult(object):
-    """TradingResult交易的结果"""
+    """单边交易的结果"""
 
     #----------------------------------------------------------------------
     def __init__(self,trade, rate, slippage, size):
