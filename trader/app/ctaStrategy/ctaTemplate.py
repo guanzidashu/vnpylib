@@ -36,6 +36,8 @@ class CtaTemplate(object):
     trading = False                # 是否启动交易，由引擎管理
     pos = 0                        # 持仓情况
     curCapital = 0                 # 可用资金
+    allCapital = 0                 # 所有资金
+    posValue = 0                   # 持仓价值 
     capital = 1000000              # 初始资金
 
 
@@ -59,6 +61,7 @@ class CtaTemplate(object):
         self.ctaEngine = ctaEngine
         self.capital = self.ctaEngine.capital
         self.curCapital = self.capital
+        self.allCapital = self.curCapital
         # 设置策略的参数
         if setting:
             d = self.__dict__
@@ -273,10 +276,12 @@ class TargetPosTemplate(CtaTemplate):
     def onTrade(self, trade):
         """收到成交推送"""
         result = UnilateralTradingResult(trade,self.ctaEngine.rate,self.ctaEngine.slippage,self.ctaEngine.size)
-        before = self.curCapital
-        self.curCapital -= result.payout
-
-        print(str(trade.dt) + "  before:" + str(before)  + "  turnover:" + str(result.turnover) + "  slippage:" + str(result.slippage) +"  commission:" + str(result.commission) + "  payout" + str(result.payout) + "  curCapital:" + str(self.curCapital) +"  all:" + str(self.curCapital+result.payout))
+        self.posValue += result.posValue
+        if trade.direction is DIRECTION_LONG:
+            self.allCapital += result.turnover - result.commission - result.slippage
+        else:
+            self.allCapital -= result.turnover - result.commission - result.slippage 
+        # print(str(trade.dt) + "  before:" + str(before)  + "  turnover:" + str(result.turnover) + "  slippage:" + str(result.slippage) +"  commission:" + str(result.commission) + "  payout:" + str(result.payout) + "  curCapital:" + str(self.curCapital) + "  price:" + str(trade.price) + "  volume:" + str(trade.volume)  )
 
 
     #----------------------------------------------------------------------

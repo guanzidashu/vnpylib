@@ -1151,10 +1151,10 @@ class UnilateralTradingResult(object):
         self.turnover = self.price*size*abs(self.volume)   # 成交金额
         self.commission = self.turnover*rate                                # 手续费成本
         self.slippage = slippage*size*abs(self.volume)                         # 滑点成本
-        if trade.offset is OFFSET_OPEN:
-            self.payout = self.turnover + self.commission + self.slippage        # 交易金额
+        if trade.direction is DIRECTION_LONG:
+            self.posValue = self.turnover
         else:
-            self.payout =-1*(self.turnover - self.commission - self.slippage)        # 交易金额
+            self.posValue = -self.turnover 
 
 
 ########################################################################
