@@ -750,7 +750,7 @@ class BacktestingEngine(object):
             timeList.append(result.exitDt)      # 交易的时间戳使用平仓时间
             capitalList.append(capital)
             drawdownList.append(drawdown)
-            drawdownListRate.append(drawdown/(capital+self.capital))
+            drawdownListRate.append(drawdown/(maxCapital+self.capital))
 
             totalResult += 1
             totalTurnover += result.turnover
@@ -813,25 +813,25 @@ class BacktestingEngine(object):
         
         # 输出
         self.output('-' * 30)
-        # self.output(u'第一笔交易：\t%s' % d['timeList'][0])
-        # self.output(u'最后一笔交易：\t%s' % d['timeList'][-1])
+        self.output(u'第一笔交易：\t%s' % d['timeList'][0])
+        self.output(u'最后一笔交易：\t%s' % d['timeList'][-1])
         
-        # self.output(u'总交易次数：\t%s' % formatNumber(d['totalResult']))        
-        # self.output(u'总盈亏：\t%s' % formatNumber(d['capital']))
-        # self.output(u'年利率：\t%s%%' % formatNumber(d['annualInterestRate']*100))
+        self.output(u'总交易次数：\t%s' % formatNumber(d['totalResult']))        
+        self.output(u'总盈亏：\t%s' % formatNumber(d['capital']))
+        self.output(u'年利率：\t%s%%' % formatNumber(d['annualInterestRate']*100))
 
-        # self.output(u'最大回撤: \t%s' % formatNumber(min(d['drawdownList'])))
-        # self.output(u'最大回撤率: \t%s%%' % formatNumber(-(min(d['drawdownListRate'])*100)))                
+        self.output(u'最大回撤: \t%s' % formatNumber(min(d['drawdownList'])))
+        self.output(u'最大回撤率: \t%s%%' % formatNumber(-(min(d['drawdownListRate'])*100)))                
                 
         
-        # self.output(u'平均每笔盈利：\t%s' %formatNumber(d['capital']/d['totalResult']))
-        # self.output(u'平均每笔滑点：\t%s' %formatNumber(d['totalSlippage']/d['totalResult']))
-        # self.output(u'平均每笔佣金：\t%s' %formatNumber(d['totalCommission']/d['totalResult']))
+        self.output(u'平均每笔盈利：\t%s' %formatNumber(d['capital']/d['totalResult']))
+        self.output(u'平均每笔滑点：\t%s' %formatNumber(d['totalSlippage']/d['totalResult']))
+        self.output(u'平均每笔佣金：\t%s' %formatNumber(d['totalCommission']/d['totalResult']))
         
-        # self.output(u'胜率\t\t%s%%' %formatNumber(d['winningRate']))
-        # self.output(u'盈利交易平均值\t%s' %formatNumber(d['averageWinning']))
-        # self.output(u'亏损交易平均值\t%s' %formatNumber(d['averageLosing']))
-        # self.output(u'盈亏比：\t%s' %formatNumber(d['profitLossRatio']))
+        self.output(u'胜率\t\t%s%%' %formatNumber(d['winningRate']))
+        self.output(u'盈利交易平均值\t%s' %formatNumber(d['averageWinning']))
+        self.output(u'亏损交易平均值\t%s' %formatNumber(d['averageLosing']))
+        self.output(u'盈亏比：\t%s' %formatNumber(d['profitLossRatio']))
 
         self.output(u'盈亏比：\t%s' %formatNumber(d['profitLossRatio']))
         self.output(u'最大回撤率: \t%s%%' % formatNumber(-(min(d['drawdownListRate'])*100)))                
@@ -840,7 +840,7 @@ class BacktestingEngine(object):
         
 
 
-        # return  d
+        return  d
         # 绘图
         fig = plt.figure(figsize=(10, 16))
         
@@ -1152,7 +1152,7 @@ class UnilateralTradingResult(object):
         self.commission = self.turnover*rate                                # 手续费成本
         self.slippage = slippage*size*abs(self.volume)                         # 滑点成本
         if trade.offset is OFFSET_OPEN:
-            self.payout = self.turnover - self.commission - self.slippage        # 交易金额
+            self.payout = self.turnover + self.commission + self.slippage        # 交易金额
         else:
             self.payout =-1*(self.turnover - self.commission - self.slippage)        # 交易金额
 

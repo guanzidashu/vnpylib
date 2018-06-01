@@ -127,7 +127,7 @@ class DoubleMaPosStrategy(TargetPosTemplate):
         maxPos = int(self.curCapital/1.1 / bar.close)
 
         if crossOver:
-            self.setTargetPos(maxPos)
+            self.setTargetPos(0)
             # print("long order price :" + str(bar.close) + "pos :"+ str(maxPos))
         # 死叉和金叉相反
         elif crossBelow:
@@ -164,7 +164,7 @@ class DoubleMaPosStrategy(TargetPosTemplate):
         # elif trade.offset == OFFSET_OPEN:
         #     self.curCapital -= turnover
         #     # print("open tracde price :" + str(trade.price) + "pos :"+ str(trade.volume))
-        # print(self.curCapital)
+        # print(str(trade.dt) + "  " + str(self.curCapital) + "  " + str(self.pos))
         pass
     
     #----------------------------------------------------------------------

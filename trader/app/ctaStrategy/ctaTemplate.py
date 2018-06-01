@@ -272,7 +272,12 @@ class TargetPosTemplate(CtaTemplate):
     #----------------------------------------------------------------------
     def onTrade(self, trade):
         """收到成交推送"""
-        self.curCapital -= UnilateralTradingResult(trade,self.ctaEngine.rate,self.ctaEngine.slippage,self.ctaEngine.size).payout
+        result = UnilateralTradingResult(trade,self.ctaEngine.rate,self.ctaEngine.slippage,self.ctaEngine.size)
+        before = self.curCapital
+        self.curCapital -= result.payout
+
+        print(str(trade.dt) + "  before:" + str(before)  + "  turnover:" + str(result.turnover) + "  slippage:" + str(result.slippage) +"  commission:" + str(result.commission) + "  payout" + str(result.payout) + "  curCapital:" + str(self.curCapital) +"  all:" + str(self.curCapital+result.payout))
+
 
     #----------------------------------------------------------------------
     def setTargetPos(self, targetPos):
