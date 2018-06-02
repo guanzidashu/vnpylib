@@ -64,7 +64,7 @@ class BacktestingEngine(object):
 
         self.capital = 1000000      # 回测时的起始本金（默认100万）
         self.curCapital = 1000000
-        self.marginRatio = 0.5      #保证金比例
+        self.marginRatio = 1      #保证金比例
         self.slippage = 0           # 回测时假设的滑点
         self.rate = 0               # 回测时假设的佣金比例（适用于百分比佣金）
         self.size = 1               # 合约大小，默认为1    
@@ -1138,22 +1138,6 @@ class BacktestingEngine(object):
         
         plt.show()
        
-
-
-########################################################################
-class UnilateralTradingResult(object):
-    """单边交易的结果"""
-
-    #----------------------------------------------------------------------
-    def __init__(self,trade, rate, slippage, size):
-        """Constructor"""
-        self.price = trade.price    
-        self.volume = trade.volume    #   
-        self.turnover = self.price*size*abs(self.volume)   # 成交金额
-        self.commission = self.turnover*rate                                # 手续费成本
-        self.slippage = slippage*size*abs(self.volume)                         # 滑点成本
-
-
 
 ########################################################################
 class TradingResult(object):

@@ -13,6 +13,20 @@ from vnpy.trader.vtObject import VtBarData
 from .ctaBase import *
 from vnpy.trader.app.ctaStrategy.ctaBacktesting import *
 
+
+
+########################################################################
+class PosInfo(object):
+    """持仓信息"""
+    """volume ±表示多空"""
+    #----------------------------------------------------------------------
+    def __init__(self,trade):
+        """Constructor"""
+        self.price = trade.price    
+        self.volume = trade.volume     
+
+
+
 ########################################################################
 class CtaTemplate(object):
     """CTA策略模板"""
@@ -36,12 +50,11 @@ class CtaTemplate(object):
     trading = False                # 是否启动交易，由引擎管理
     pos = 0                        # 持仓情况
     curCapital = 0                 # 可用资金
-    posPrice = 0                   # 持仓价格
-    posValue = 0                   # 持仓价值 
     capital = 1000000              # 初始资金
-    marginRatio = 0.5              # 保证金比例
+    marginRatio = 1              # 保证金比例
     margin = 0
     allValue = 0                   # 总价值
+    posInfos = []
 
     # 参数列表，保存了参数的名称
     paramList = ['name',
@@ -278,25 +291,66 @@ class TargetPosTemplate(CtaTemplate):
     #----------------------------------------------------------------------
     def onTrade(self, trade):
         """收到成交推送"""
-        #持有多头
-        result = UnilateralTradingResult(trade,self.ctaEngine.rate,self.ctaEngine.slippage,self.ctaEngine.size)
-        if trade.offset == OFFSET_OPEN 
+        turnover = trade.price * abs(trade.volume)
+        loss = turnover * self.ctaEngine.rate + turnover * self.ctaEngine.slippage
+        if trade.offset == OFFSET_OPEN :
             if trade.direction is DIRECTION_LONG:
+                #更新保证金
+                self.margin += turnover * self.marginRatio
+                #更新可用资金
+                self.curCapital = self.curCapital - self.margin - loss 
+                #更新持仓信息
+                self.posInfos.append(PosInfo(trade))
+            else:
+                #更新保证金
+                self.margin += turnover * self.marginRatio
+                #更新可用资金
+                self.curCapital = self.curCapital - self.margin - loss 
+                #更新持仓信息
+                ntrade = copy.copy(trade)
+                ntrade.volume = - abs(trade.volume)
+                self.posInfos.append(PosInfo(ntrade))
 
-            else:
-                self.allCapital -= result.turnover - result.commission - result.slippage 
+            #更新总资产 
+            self.allValue = self.curCapital + self.margin        
         else:
+            profit = 0
+            ntrade = copy.copy(trade)
+
+            #平空
             if trade.direction is DIRECTION_LONG:
-                #合约价值
-                self.posValue = abs(trade.price * self.pos)
-                #收益
-                profit = (trade.price - self.posPrice) * trade.volume / self.marginRatio
-                #保证金
-                self.margin = abs(trade.price * self.pos *self.marginRatio)
-                #可用资金
-                self.curCapital = self.allValue - self.posValue - margin + profit - result.commission - result.slippage
+                for posInfo in self.posInfos:
+                    if (ntrade.volume <= abs(posInfo.volume)):
+                        #盈亏
+                        profit += - (ntrade.price - posInfo.price) * ntrade.volume / self.marginRatio  
+                        posInfo.volume += ntrade.volume
+                        break
+                    else:
+                        profit += (ntrade.price - posInfo.price) * posInfo.volume / self.marginRatio  
+                        posInfo.volume = 0
+            #平多
             else:
-                self.allCapital -= result.turnover - result.commission - result.slippage
+                for posInfo in self.posInfos:
+                    if (ntrade.volume <= posInfo.volume):
+                        #盈亏
+                        profit += (ntrade.price - posInfo.price) * abs(ntrade.volume) / self.marginRatio  
+                        posInfo.volume -= ntrade.volume
+                        break
+                    else:
+                        profit += (ntrade.price - posInfo.price) * abs(posInfo.volume) / self.marginRatio
+                        posInfo.volume = 0
+            #计算可用资金
+            self.margin = 0
+            self.posInfos =  list(filter(lambda posInfo: posInfo.volume != 0 , self.posInfos))    
+            for posInfo in self.posInfos:
+                self.margin += abs(posInfo.volume) * trade.price
+            self.curCapital = self.allValue + profit - self.margin - loss
+            self.allValue = self.margin + self.curCapital
+
+        print("all :" + str(self.allValue) )
+
+
+                        
             
         # print(str(trade.dt) + "  before:" + str(before)  + "  turnover:" + str(result.turnover) + "  slippage:" + str(result.slippage) +"  commission:" + str(result.commission) + "  payout:" + str(result.payout) + "  curCapital:" + str(self.curCapital) + "  price:" + str(trade.price) + "  volume:" + str(trade.volume)  )
 
@@ -370,8 +424,13 @@ class TargetPosTemplate(CtaTemplate):
             else:
                 l = self.short(shortPrice, abs(posChange))
         self.orderList.extend(l)
-    
-    
+
+
+
+
+
+
+
 ########################################################################
 class BarGenerator(object):
     """

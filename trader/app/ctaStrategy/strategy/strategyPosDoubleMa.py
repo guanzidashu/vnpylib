@@ -124,7 +124,7 @@ class DoubleMaPosStrategy(TargetPosTemplate):
         
         # 金叉和死叉的条件是互斥
         # 所有的委托均以K线收盘价委托（这里有一个实盘中无法成交的风险，考虑添加对模拟市价单类型的支持）
-        maxPos = int(self.curCapital/1.1 / bar.close)
+        maxPos = int(self.curCapital / self.marginRatio /1.1 / bar.close)
 
         if crossOver:
             self.setTargetPos(0)
