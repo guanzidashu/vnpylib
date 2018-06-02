@@ -222,7 +222,7 @@ class BacktestingEngine(object):
         self.output(u'载入完成，数据量：%s' %(initCursor.count() + self.dbCursor.count()))
         
     #----------------------------------------------------------------------
-    def runBacktesting(self):
+    def runBacktesting(self): 
         """运行回测"""
         # 载入历史数据
         self.loadHistoryData()
@@ -719,7 +719,11 @@ class BacktestingEngine(object):
         if not resultList:
             self.output(u'无交易结果')
             return {}
-        
+
+        rpnl = 0
+        for r in resultList:
+            rpnl += r.pnl
+        print(rpnl)
         # 然后基于每笔交易的结果，我们可以计算具体的盈亏曲线和最大回撤等        
         capital = 0             # 资金
         maxCapital = 0          # 资金最高净值

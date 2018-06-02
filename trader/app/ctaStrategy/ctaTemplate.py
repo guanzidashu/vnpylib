@@ -56,6 +56,8 @@ class CtaTemplate(object):
     allValue = 0                   # 总价值
     posInfos = []
 
+    profit = 0
+
     # 参数列表，保存了参数的名称
     paramList = ['name',
                  'className',
@@ -323,6 +325,7 @@ class TargetPosTemplate(CtaTemplate):
                     if (ntrade.volume <= abs(posInfo.volume)):
                         #盈亏
                         profit += - (ntrade.price - posInfo.price) * ntrade.volume / self.marginRatio  
+                        # print(profit)
                         posInfo.volume += ntrade.volume
                         break
                     else:
@@ -335,6 +338,8 @@ class TargetPosTemplate(CtaTemplate):
                         #盈亏
                         profit += (ntrade.price - posInfo.price) * abs(ntrade.volume) / self.marginRatio  
                         posInfo.volume -= ntrade.volume
+                        # print(profit)
+
                         break
                     else:
                         profit += (ntrade.price - posInfo.price) * abs(posInfo.volume) / self.marginRatio
@@ -343,11 +348,14 @@ class TargetPosTemplate(CtaTemplate):
             self.margin = 0
             self.posInfos =  list(filter(lambda posInfo: posInfo.volume != 0 , self.posInfos))    
             for posInfo in self.posInfos:
-                self.margin += abs(posInfo.volume) * trade.price
+                self.margin += abs(posInfo.volume) * trade.price * self.marginRatio
             self.curCapital = self.allValue + profit - self.margin - loss
             self.allValue = self.margin + self.curCapital
 
-        print("all :" + str(self.allValue) )
+            self.profit += profit
+            # print(self.profit)
+
+        print("all :" + str(self.allValue)  )
 
 
                         
