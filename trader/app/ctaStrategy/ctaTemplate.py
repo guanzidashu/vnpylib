@@ -36,10 +36,12 @@ class CtaTemplate(object):
     trading = False                # 是否启动交易，由引擎管理
     pos = 0                        # 持仓情况
     curCapital = 0                 # 可用资金
-    allCapital = 0                 # 所有资金
+    posPrice = 0                   # 持仓价格
     posValue = 0                   # 持仓价值 
     capital = 1000000              # 初始资金
-
+    marginRatio = 0.5              # 保证金比例
+    margin = 0
+    allValue = 0                   # 总价值
 
     # 参数列表，保存了参数的名称
     paramList = ['name',
@@ -61,7 +63,8 @@ class CtaTemplate(object):
         self.ctaEngine = ctaEngine
         self.capital = self.ctaEngine.capital
         self.curCapital = self.capital
-        self.allCapital = self.curCapital
+        self.marginRatio = self.ctaEngine.marginRatio
+        self.allValue = self.capital
         # 设置策略的参数
         if setting:
             d = self.__dict__
@@ -275,12 +278,26 @@ class TargetPosTemplate(CtaTemplate):
     #----------------------------------------------------------------------
     def onTrade(self, trade):
         """收到成交推送"""
+        #持有多头
         result = UnilateralTradingResult(trade,self.ctaEngine.rate,self.ctaEngine.slippage,self.ctaEngine.size)
-        self.posValue += result.posValue
-        if trade.direction is DIRECTION_LONG:
-            self.allCapital += result.turnover - result.commission - result.slippage
+        if trade.offset == OFFSET_OPEN 
+            if trade.direction is DIRECTION_LONG:
+
+            else:
+                self.allCapital -= result.turnover - result.commission - result.slippage 
         else:
-            self.allCapital -= result.turnover - result.commission - result.slippage 
+            if trade.direction is DIRECTION_LONG:
+                #合约价值
+                self.posValue = abs(trade.price * self.pos)
+                #收益
+                profit = (trade.price - self.posPrice) * trade.volume / self.marginRatio
+                #保证金
+                self.margin = abs(trade.price * self.pos *self.marginRatio)
+                #可用资金
+                self.curCapital = self.allValue - self.posValue - margin + profit - result.commission - result.slippage
+            else:
+                self.allCapital -= result.turnover - result.commission - result.slippage
+            
         # print(str(trade.dt) + "  before:" + str(before)  + "  turnover:" + str(result.turnover) + "  slippage:" + str(result.slippage) +"  commission:" + str(result.commission) + "  payout:" + str(result.payout) + "  curCapital:" + str(self.curCapital) + "  price:" + str(trade.price) + "  volume:" + str(trade.volume)  )
 
 
