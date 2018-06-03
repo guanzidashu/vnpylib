@@ -300,18 +300,22 @@ class TargetPosTemplate(CtaTemplate):
                 #更新保证金
                 self.margin += turnover * self.marginRatio
                 #更新可用资金
-                self.curCapital = self.curCapital - self.margin - loss 
+                self.curCapital = self.allValue - self.margin - loss 
                 #更新持仓信息
                 self.posInfos.append(PosInfo(trade))
+                self.allValue = self.margin + self.curCapital
+
             else:
                 #更新保证金
                 self.margin += turnover * self.marginRatio
                 #更新可用资金
-                self.curCapital = self.curCapital - self.margin - loss 
+                self.curCapital = self.allValue - self.margin - loss 
                 #更新持仓信息
                 ntrade = copy.copy(trade)
                 ntrade.volume = - abs(trade.volume)
                 self.posInfos.append(PosInfo(ntrade))
+                self.allValue = self.margin + self.curCapital
+
 
             #更新总资产 
             self.allValue = self.curCapital + self.margin        
@@ -352,10 +356,10 @@ class TargetPosTemplate(CtaTemplate):
             self.curCapital = self.allValue + profit - self.margin - loss
             self.allValue = self.margin + self.curCapital
 
-            self.profit += profit
+            # self.profit += profit
             # print(self.profit)
 
-        print("all :" + str(self.allValue)  )
+        print(" all :" + str(self.allValue)  +"  margin :" + str(self.margin)  +"  curCapital :" + str(self.curCapital) + " pos: " + str(self.pos))
 
 
                         
