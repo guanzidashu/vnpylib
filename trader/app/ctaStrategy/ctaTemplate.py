@@ -294,7 +294,7 @@ class TargetPosTemplate(CtaTemplate):
     def onTrade(self, trade):
         """收到成交推送"""
         turnover = trade.price * abs(trade.volume)
-        loss = turnover * self.ctaEngine.rate + turnover * self.ctaEngine.slippage
+        loss = turnover * self.ctaEngine.rate + abs(trade.volume) * self.ctaEngine.slippage
         if trade.offset == OFFSET_OPEN :
             if trade.direction is DIRECTION_LONG:
                 #更新保证金

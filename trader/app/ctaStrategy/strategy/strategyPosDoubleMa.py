@@ -124,11 +124,10 @@ class DoubleMaPosStrategy(TargetPosTemplate):
         
         # 金叉和死叉的条件是互斥
         # 所有的委托均以K线收盘价委托（这里有一个实盘中无法成交的风险，考虑添加对模拟市价单类型的支持）
-        maxPos = int(self.curCapital / self.marginRatio /1.1 / bar.close)
+        maxPos = max(int(self.curCapital / self.marginRatio /1.1 / bar.close),0)
 
 
-            # print("short order price :" + str(bar.close) + "pos :"+ str(maxPos))
-                # 当前无仓位，发送OCO开仓委托
+
         if self.pos == 0:
             if crossOver:
                 self.setTargetPos(maxPos)
@@ -138,7 +137,7 @@ class DoubleMaPosStrategy(TargetPosTemplate):
         # 持有多头仓位
         elif self.pos > 0:
             if crossOver:
-                self.setTargetPos(maxPos+self.pos)
+                self.buy(bar.close,maxPos)
             elif crossBelow:
                 self.setTargetPos(0)
     
@@ -147,8 +146,7 @@ class DoubleMaPosStrategy(TargetPosTemplate):
             if crossOver:
                 self.setTargetPos(0)
             elif crossBelow:
-                self.setTargetPos(self.pos - maxPos)
-     
+                self.short(bar.close,maxPos)
         # 发出状态更新事件
         self.putEvent()
         

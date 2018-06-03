@@ -148,6 +148,12 @@ class BacktestingEngine(object):
         self.mode = mode
     
     #----------------------------------------------------------------------
+    def setMarginRatio(self, marginRatio):
+        """设置回测模式"""
+        self.marginRatio = marginRatio        
+
+    
+    #----------------------------------------------------------------------
     def setDatabase(self, dbName, symbol):
         """设置历史数据所用的数据库"""
         self.dbName = dbName
