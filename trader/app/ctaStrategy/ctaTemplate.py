@@ -316,9 +316,7 @@ class TargetPosTemplate(CtaTemplate):
                 self.posInfos.append(PosInfo(ntrade))
                 self.allValue = self.margin + self.curCapital
 
-
-            #更新总资产 
-            self.allValue = self.curCapital + self.margin        
+      
         else:
             profit = 0
             ntrade = copy.copy(trade)
@@ -328,25 +326,25 @@ class TargetPosTemplate(CtaTemplate):
                 for posInfo in self.posInfos:
                     if (ntrade.volume <= abs(posInfo.volume)):
                         #盈亏
-                        profit += - (ntrade.price - posInfo.price) * ntrade.volume / self.marginRatio  
+                        profit += - (ntrade.price - posInfo.price) * ntrade.volume  
                         # print(profit)
                         posInfo.volume += ntrade.volume
                         break
                     else:
-                        profit += (ntrade.price - posInfo.price) * posInfo.volume / self.marginRatio  
+                        profit += (ntrade.price - posInfo.price) * posInfo.volume  
                         posInfo.volume = 0
             #平多
             else:
                 for posInfo in self.posInfos:
                     if (ntrade.volume <= posInfo.volume):
                         #盈亏
-                        profit += (ntrade.price - posInfo.price) * abs(ntrade.volume) / self.marginRatio  
+                        profit += (ntrade.price - posInfo.price) * abs(ntrade.volume)  
                         posInfo.volume -= ntrade.volume
                         # print(profit)
 
                         break
                     else:
-                        profit += (ntrade.price - posInfo.price) * abs(posInfo.volume) / self.marginRatio
+                        profit += (ntrade.price - posInfo.price) * abs(posInfo.volume) 
                         posInfo.volume = 0
             #计算可用资金
             self.margin = 0
@@ -359,7 +357,7 @@ class TargetPosTemplate(CtaTemplate):
             # self.profit += profit
             # print(self.profit)
 
-        print(" all :" + str(self.allValue)  +"  margin :" + str(self.margin)  +"  curCapital :" + str(self.curCapital) + " pos: " + str(self.pos))
+        # print(" all :" + str(self.allValue)  +"  margin :" + str(self.margin)  +"  curCapital :" + str(self.curCapital) + " pos: " + str(self.pos))
 
 
                         
