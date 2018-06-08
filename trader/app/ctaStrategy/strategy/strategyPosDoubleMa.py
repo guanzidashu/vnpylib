@@ -127,8 +127,7 @@ class DoubleMaPosStrategy(TargetPosTemplate):
         maxPos = max(int(self.curCapital / self.marginRatio /1.1 / bar.close),0)
         if maxPos < 20 :
             maxPos = 0
-            crossOver = False
-            crossBelow = False
+
         if self.pos == 0:
             if crossOver:
                 self.setTargetPos(maxPos)
