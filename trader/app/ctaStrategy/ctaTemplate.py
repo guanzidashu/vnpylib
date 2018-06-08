@@ -149,6 +149,8 @@ class CtaTemplate(object):
 
     #----------------------------------------------------------------------
     def sendOrder(self, orderType, price, volume, stop=False):
+        if volume == 0:
+            return
         """发送委托"""
         if self.trading:
             # 如果stop为True，则意味着发本地停止单
