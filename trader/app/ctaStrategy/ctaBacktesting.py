@@ -774,6 +774,9 @@ class BacktestingEngine(object):
             else:
                 losingResult += 1
                 totalLosing += result.pnl
+            
+            # print ', '.join(['%s:%s ' % item for item in result.__dict__.items()])  
+
                 
         # 计算盈亏相关数据
         winningRate = winningResult/totalResult*100         # 胜率
@@ -821,7 +824,8 @@ class BacktestingEngine(object):
     def showBacktestingResult(self):
         """显示回测结果"""
         d = self.calculateBacktestingResult()
-        
+  
+        # print(d)
         # 输出
         self.output('-' * 30)
         self.output(u'第一笔交易：\t%s' % d['timeList'][0])

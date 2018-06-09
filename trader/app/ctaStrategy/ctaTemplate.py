@@ -410,8 +410,8 @@ class TargetPosTemplate(CtaTemplate):
         # 然后先发平仓委托，等待成交后，再发送新的开仓委托
 
         # 检查之前委托都已结束
-        if self.orderList:
-            return
+        # if self.orderList:
+        #     return
 
         # 买入
         if posChange > 0:

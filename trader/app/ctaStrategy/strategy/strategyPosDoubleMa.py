@@ -163,21 +163,6 @@ class DoubleMaPosStrategy(TargetPosTemplate):
     def onTrade(self, trade):
         """收到成交推送（必须由用户继承实现）"""
         super(DoubleMaPosStrategy, self).onTrade(trade)
-
-        # # 对于无需做细粒度委托控制的策略，可以忽略onOrder
-        # # trade = VtTradeData(trade)
-        # turnover = trade.price * trade.volume       #成交金额
-        # from vnpy.trader.vtGateway import VtOrderData, VtTradeData
-        # from vnpy.trader.vtConstant import DIRECTION_LONG, DIRECTION_SHORT, OFFSET_OPEN, OFFSET_CLOSE, PRICETYPE_LIMITPRICE
-
-        # if trade.offset == OFFSET_CLOSE:          
-        #     self.curCapital += turnover
-        #     # print("close tracde price :" + str(trade.price) + "pos :"+ str(trade.volume))
-
-        # elif trade.offset == OFFSET_OPEN:
-        #     self.curCapital -= turnover
-        #     # print("open tracde price :" + str(trade.price) + "pos :"+ str(trade.volume))
-        # print(str(trade.dt) + "  " + str(self.curCapital) + "  " + str(self.pos))
         pass
     
     #----------------------------------------------------------------------
